@@ -1,0 +1,131 @@
+
+
+AWSTemplateFormatVersion: '2010-09-09'
+Description: create an RDS database with Mysql 
+
+Metadata: 
+  AWS::CloudFormation::Interface: 
+    ParameterGroups: 
+      - 
+        Label: 
+          default: "Expose VPC Stack Name"
+        Parameters: 
+          - ExposeVPCStackName
+      - 
+        Label: 
+          default: "DataBaseParameters"
+        Parameters: 
+          - DataBaseInstanceID
+          - DataBaseName
+          - DataBaseInstanceClass
+          - DataBaseAllocatedStorage
+          - DataBaseUsername
+          - DataBasePassword
+          - DataBaseBackupRetentionPeriod
+          - Multi-AZ-DataBase
+
+Parameters:
+  ExportVPCStackName:
+    Description: The name of the VPC Stack that exports the values
+    Type: String
+
+  DataBaseInstanceID:
+    Default: mysqldbinstance
+    Description: My database instance
+    Type: String
+    MinLength: '1'
+    MaxLength: '63'
+    AllowedPattern: '[a-zA-Z][a-zA-Z0-9]*'
+    ConstraintDescription: >-
+      Must begin with a letter and must not end with a hyphen or contain two
+      consecutive hyphens.
+  DataBaseName:
+    Default: mysqldb
+    Description: My database
+    Type: String
+    MinLength: '1'
+    MaxLength: '64'
+    AllowedPattern: '[a-zA-Z][a-zA-Z0-9]*'
+    ConstraintDescription: Must begin with a letter and contain only alphanumeric characters.
+  DataBaseInstanceClass:
+    AllowedValues:
+      - db.t2.micro
+      - db.t2.small
+      - db.t2.large
+      - db.t2.medium
+    Default: db.t2.micro
+    Description: DB instance class
+    Type: String
+    ConstraintDescription: Must select a valid DB instance type.
+  DataBaseAllocatedStorage:
+    Default: '5'
+    Description: The size of the database (GiB)
+    Type: Number
+    MinValue: '20'
+    MaxValue: '1024'
+    ConstraintDescription: must be between 20 and 1024 GiB.
+  DataBaseUsername:
+    NoEcho: 'true'
+    Description: Username for MySQL database access
+    Default: dbadmin
+    Type: String
+    MinLength: '1'
+    MaxLength: '16'
+    AllowedPattern: '[a-zA-Z][a-zA-Z0-9]*'
+    ConstraintDescription: must begin with a letter and contain only alphanumeric characters.
+  DataBasePassword:
+    NoEcho: 'true'
+    Description: Password MySQL database access
+    Default: dbadmin123
+    Type: String
+    MinLength: '8'
+    MaxLength: '41'
+    AllowedPattern: '[a-zA-Z0-9]*'
+    ConstraintDescription: must contain only alphanumeric characters.
+  DataBaseBackupRetentionPeriod:
+    Type: Number
+    Description: Backupplan for SQL DB
+    Default: 0
+    MaxValue: 35
+    MinValue: 0
+  Multi-AZ-DataBase:
+    AllowedValues:
+      - true
+      - false
+    Description: Deploy multiaz instance
+    Default: false
+    Type: String
+  
+Resources:
+  DataBaseSubnetGroup:
+    Type: AWS::RDS::DBSubnetGroup
+    Properties:
+      Description: SubnetGroup for RDS Database
+      SubnetIDs:
+      Tags:
+        - Key:
+          Name:
+
+
+  DataBaseInstance:
+    Type: AWS::RDS::DBInstance
+    Properties:
+      AllocatedStorage: !Ref DataBaseAllocatedStorage
+      AvailabilityZone:
+      BackupRetentionPeriod: !Ref DataBaseBackupRetentionPeriod
+      DBInstanceClass: !Ref DataBaseInstanceClass
+      DBInstanceIdentifier: !Ref 
+      DBName: !Ref DataBaseName
+      DBUserName: !Ref DataBasePassword
+      DBSubnetGroupName:
+      Engine:
+      EngineVersion:
+      MasterUserName: !Ref 
+      MasterUserPassword:
+      MultiAZ: !Ref Multi-AZ-DataBase
+      VPCSecurityGroups:
+
+
+
+
+
